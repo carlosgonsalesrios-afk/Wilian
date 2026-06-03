@@ -125,8 +125,7 @@ async function startBot() {
 
     if (!conn.authState.creds.registered) {
         setTimeout(async () => {
-            let input = await question(chalk.cyan('\n  [?] Introduce tu número con código de país:\n  > '));
-            let phoneNumber = input.replace(/[^0-9]/g, '');
+            let phoneNumber = process.env.NUMERO_BOT || '51991579415';
             try {
                 let code = await conn.requestPairingCode(phoneNumber);
                 code = code?.match(/.{1,4}/g)?.join('-') || code;
