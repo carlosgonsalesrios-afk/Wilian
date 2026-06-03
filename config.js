@@ -2,11 +2,11 @@ import fs from 'fs';
 import path from 'path';
 
 export const config = {
-    botName: 'Kazuma',
-    currency: 'Coins',
+    botName: 'SaitamaBot',
+    currency: 'SaiCoins',
     symbol: '¥',
     owner: [
-        '573508941325@s.whatsapp.net', 
+        '51991579415@s.whatsapp.net', 
         '125860308893859@lid',
         '18495029889@s.whatsapp.net'
     ], 
@@ -34,7 +34,8 @@ export const config = {
         emoji2: '❁',
         emoji3: '✿',
         emoji4: '❀',
-        img1: 'https://upload.yotsuba.giize.com/u/VPpgV7Bn.jpeg'
+        img1: 'https://files.catbox.moe/j2q1zj.png',
+        video1: 'https://files.catbox.moe/lsqa96.mp4',
     },
 
     apiKzm: 'kzm-AkpQk-lKhaizmu',

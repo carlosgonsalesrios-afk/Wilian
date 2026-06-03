@@ -151,8 +151,8 @@ async function startBot() {
             }
         } else if (connection === 'open') {
             process.stdout.write('\x1Bc');
-            CFonts.say('KAZUMA', { font: 'block', align: 'center', colors: ['cyan', 'magenta'] });
-            console.log(chalk.greenBright.bold(`\n  [✨] ¡KAZUMA CONECTADO!\n  [⌚] Tiempo de carga: ${((Date.now() - startTime) / 1000).toFixed(2)}s`));
+            CFonts.say('SAITAMA', { font: 'block', align: 'center', colors: ['cyan', 'magenta'] });
+            console.log(chalk.greenBright.bold(`\n  [✨] ¡KSAITAMA CONECTADO!\n  [⌚] Tiempo de carga: ${((Date.now() - startTime) / 1000).toFixed(2)}s`));
             await loadAllSubBots(conn);
             await loadAllMoodBots(conn);
         }

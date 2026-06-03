@@ -60,13 +60,13 @@ const menuCommand = {
 
             const infoBot = `┏━━━━✿︎ 𝐈𝐍𝐅𝐎-𝐁𝐎𝐓 ✿︎━━━━╮
 ┃ ✐ *Owner* »
-┃ kazuma.giize.com/Dev-FelixOfc
+┃ 51991579415
 ┃ ✐ *Commands* »
-┃ kazuma.giize.com/commands
+┃ .play .play2 .tt .fb .etc
 ┃ ✐ *Upload* »
-┃ upload.yotsuba.giize.com
+┃ impostagem
 ┃ ✐ *Official channel* »
-┃ https://whatsapp.com/channel/0029Vb6sgWdJkK73qeLU0J0N
+┃   No Hay 
 ╰━━━━━━━━━━━━━━━━━━━╯\n`;
 
             const infoUser = `┏━━━━✿︎ 𝐈𝐍𝐅𝐎-𝐔𝐒𝐄𝐑 ✿︎━━━━╮
@@ -108,11 +108,16 @@ const menuCommand = {
             let header = `¡Hola! Soy ${displayLongName} *(${currentBotType})*.\n\n`;
             let textoMenu = `${header}${subHeader}${infoBot}\n${infoUser}\n\n${finalBody}`;
 
-            await conn.sendMessage(m.chat, { 
-                image: { url: displayBanner }, 
-                caption: textoMenu,
-                mentions: [userJid]
-            }, { quoted: m });
+            await conn.sendMessage(
+    m.chat,
+    {
+        video: { url: config.visuals.video1 },
+        caption: textoMenu,
+        mimetype: 'video/mp4',
+        mentions: [userJid]
+    },
+    { quoted: m }
+);
 
         } catch (err) {
             console.error('Error en el menú:', err);

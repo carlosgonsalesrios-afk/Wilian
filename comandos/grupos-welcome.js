@@ -21,7 +21,7 @@ export default function welcomeHandler(conn) {
             try {
                 pp = await conn.profilePictureUrl(jid, 'image');
             } catch {
-                pp = 'https://upload.yotsuba.giize.com/u/VPpgV7Bn.jpeg';
+                pp = 'https://files.catbox.moe/j2q1zj.png';
             }
 
             if (action === 'add') {
@@ -30,7 +30,7 @@ export default function welcomeHandler(conn) {
                 txt += `estamos felices de que te hayas unido al grupo `;
                 txt += `*${metadata.subject}* y nos encantaría conocerte!\n\n`;
                 txt += `✰ para ver mi lista de comandos usa el comando \`${prefix}help\`\n`;
-                txt += `> kazuma.giize.com\n`;
+                txt += `> SaitamaBot ©2026\n`;
                 txt += `╰━━━━━━━━━━━━━━━╯`;
 
                 await conn.sendMessage(id, { 
@@ -43,7 +43,7 @@ export default function welcomeHandler(conn) {
                 txt += `❀ ¡Adiós! @${userNumber} lamentamos que hayas dejado el grupo `;
                 txt += `*${metadata.subject}*, ¡fue un gusto tenerte con nosotros!\n\n`;
                 txt += `✰ esperamos que vuelvas pronto por aquí\n`;
-                txt += `> kazuma.giize.com\n`;
+                txt += `> SaitamaBot ©2026\n`;
                 txt += `╰━━━━━━━━━━━━━━━╯`;
 
                 await conn.sendMessage(id, { 

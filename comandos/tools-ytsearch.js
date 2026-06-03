@@ -1,55 +1,84 @@
-import { config } from '../config.js';
-import axios from 'axios';
+import axios from 'axios'
 
 const youtubeSearch = {
-    name: 'ytsearch',
-    alias: ['yts', 'searchy'],
-    category: 'tools',
-    desc: 'Busca y muestra información de los 5 primeros resultados de YouTube.',
-    noPrefix: true,
+name: 'ytsearch',
+alias: ['yts', 'searchy'],
+category: 'tools',
+noPrefix: true,
 
-    run: async (conn, m, args, usedPrefix, commandName, text) => {
-        const query = text || (m.quoted && m.quoted.text);
-        
-        if (!query) return m.reply(`*${config.visuals.emoji2}* Por favor, ingresa el texto de búsqueda o responde a un mensaje.`);
+run: async (conn, m, args, usedPrefix, commandName, text) => {  
+    const query = text || args.join(' ')  
 
-        await conn.sendMessage(m.chat, { react: { text: '🔍', key: m.key } });
+    if (!query) {  
+        return m.reply('Ingresa un texto para buscar.')  
+    }  
 
-        const apiUrl = 'https://rest.kazuma.giize.com';
-        const apiKey = 'kzm-OAiJOEWc-dRXYVXtW';
+    try {  
+        const { data } = await axios.get(  
+            `https://api.delirius.store/search/ytsearch?q=${encodeURIComponent(query)}`  
+        )  
 
-        try {
-            const { data: searchRes } = await axios.get(`${apiUrl}/api/search/youtube?apiKey=${apiKey}&q=${encodeURIComponent(query)}`);
+        if (!data?.status || !data?.data?.length) {  
+            return m.reply('No se encontraron resultados.')  
+        }  
 
-            if (!searchRes.status || !searchRes.result || searchRes.result.length === 0) {
-                await conn.sendMessage(m.chat, { react: { text: '❌', key: m.key } });
-                return m.reply('No se encontraron resultados.');
-            }
+        const cards = data.data.slice(0, 8).map(res => ({  
+image: {  
+    url: res.image  
+},  
 
-            const results = searchRes.result.slice(0, 5);
-            let responseText = `*${config.visuals.emoji3} YouTube Results ${config.visuals.emoji3}*\n\n`;
+title: res.title,  
 
-            results.forEach((res, index) => {
-                responseText += `*${index + 1}. ${res.title}*\n`;
-                responseText += `*= Canal* » ${res.channel}\n`;
-                responseText += `*= Publicado* » ${res.publishedAt}\n`;
-                responseText += `*= Duración* » ${res.duration}\n`;
-                responseText += `*= Vistas* » ${res.views}\n`;
-                responseText += `*= Enlace* » ${res.url}\n\n`;
-            });
+body:  
+    `📺 Canal: ${res.author?.name || 'Desconocido'}\n` +  
+    `⏱️ Duración: ${res.duration}\n` +  
+    `👁️ Vistas: ${res.views}`,  
 
-            await conn.sendMessage(m.chat, { 
-                image: { url: results[0].thumbnail }, 
-                caption: responseText.trim() 
-            }, { quoted: m });
+footer: 'SaitamaBot-Sckt-MD',  
 
-            await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } });
+buttons: [  
+    {  
+        name: 'quick_reply',  
+        buttonParamsJson: JSON.stringify({  
+            display_text: '🎵 Audio',  
+            id: `.yta ${res.url}`  
+        })  
+    },  
+    {  
+        name: 'quick_reply',  
+        buttonParamsJson: JSON.stringify({  
+            display_text: '🎥 Video',  
+            id: `.ytv ${res.url}`  
+        })  
+    },  
+    {  
+        name: 'cta_url',  
+        buttonParamsJson: JSON.stringify({  
+            display_text: '🌐 YouTube',  
+            url: res.url  
+        })  
+    }  
+]
 
-        } catch (e) {
-            await conn.sendMessage(m.chat, { react: { text: '✖️', key: m.key } });
-            m.reply(`*${config.visuals.emoji2}* Error al procesar la búsqueda.`);
-        }
+}))
+await conn.sendMessage(
+    m.chat,
+    {
+        text: `🔎 Resultados para: ${query}`,
+        footer: 'Selecciona una opción',
+        cards
+    },
+    {
+        quoted: m
     }
-};
+)
 
-export default youtubeSearch;
+} catch (e) {  
+        console.log(e)  
+        m.reply('Error al procesar la búsqueda.')  
+    }  
+}
+
+}
+
+export default youtubeSearch

@@ -69,9 +69,16 @@ export const pixelHandler = async (conn, m, config) => {
         const isListedOwner = ownerNumbers.includes(senderNumber) || m.key.fromMe;
 
         const type = Object.keys(m.message)[0];
-        const body = (type === 'conversation') ? m.message.conversation : 
-                     (type === 'extendedTextMessage') ? m.message.extendedTextMessage.text : 
-                     (m.message[type] && m.message[type].caption) ? m.message[type].caption : '';
+
+const body =
+    m.message?.conversation ||
+    m.message?.extendedTextMessage?.text ||
+    m.message?.imageMessage?.caption ||
+    m.message?.videoMessage?.caption ||
+    m.message?.buttonsResponseMessage?.selectedButtonId ||
+    m.message?.templateButtonReplyMessage?.selectedId ||
+    m.message?.interactiveResponseMessage?.nativeFlowResponseMessage?.paramsJson ||
+    '';
 
         if (!body && !m.quoted) return;
 

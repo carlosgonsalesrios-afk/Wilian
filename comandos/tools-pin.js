@@ -1,50 +1,91 @@
-import { config } from '../config.js';
-import axios from 'axios';
+import axios from 'axios'
+import { config } from '../config.js'
 
-const pinterestCommand = {
+const pinterestSearch = {
     name: 'pinterest',
     alias: ['pin', 'pinter'],
     category: 'tools',
-    desc: 'Busca imágenes en Pinterest usando la API de Kazuma.',
     noPrefix: true,
 
     run: async (conn, m, args, usedPrefix, commandName, text) => {
+        const query = text || args.join(' ')
+
+        if (!query) {
+            return m.reply(
+                `*${config.visuals.emoji2}* Ingresa un texto para buscar.\n\n` +
+                `Ejemplo: ${usedPrefix + commandName} Yotsuba Nakano`
+            )
+        }
+
         try {
-            if (!text) {
-                return m.reply(`*${config.visuals.emoji2}* Ingrese el texto de búsqueda.\n\nEjemplo: ${usedPrefix}${commandName} Yotsuba Nakano`);
-            }
-
-            await conn.sendMessage(m.chat, { react: { text: '⌛', key: m.key } });
-
-            const apiUrl = `https://${config.kzmUrl}/api/search/pinterest?query=${encodeURIComponent(text)}&apiKey=kzm-OifUrFOl-oSSLeonc`;
-
-            const response = await axios.get(apiUrl);
-            const res = response.data;
-
-            if (!res.status || !res.data || res.data.length === 0) {
-                await conn.sendMessage(m.chat, { react: { text: '❌', key: m.key } });
-                return m.reply(`*${config.visuals.emoji2}* No encontré resultados.`);
-            }
-
-            m.reply(`*${config.visuals.emoji3}* Buscando resultados en la API para: ${text}...`);
-
-            const images = res.data.slice(0, 10);
-
-            for (let item of images) {
-                if (item.image_url) {
-                    await conn.sendMessage(m.chat, { 
-                        image: { url: item.image_url }
-                    }, { quoted: m });
+            await conn.sendMessage(m.chat, {
+                react: {
+                    text: '🔍',
+                    key: m.key
                 }
+            })
+
+            const { data } = await axios.get(
+                `https://${config.kzmUrl}/api/search/pinterest?query=${encodeURIComponent(query)}&apiKey=${config.apiKzm}`
+            )
+
+            if (!data?.status || !data?.data?.length) {
+                await conn.sendMessage(m.chat, {
+                    react: {
+                        text: '❌',
+                        key: m.key
+                    }
+                })
+
+                return m.reply('No se encontraron resultados.')
             }
 
-            await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } });
+            const cards = data.data.slice(0, 7).map((item, index) => ({
+                image: {
+                    url: item.image_url
+                },
+
+                title: `📌 Resultado ${index + 1}`,
+
+                body:
+                    `🔎 Búsqueda: ${query}\n` +
+                    `🖼️ Pinterest Image`,
+
+                footer: 'SaitamaBot-Sckt-MD'
+            }))
+
+            await conn.sendMessage(
+                m.chat,
+                {
+                    text: `📌 Resultados para: ${query}`,
+                    footer: 'Pinterest Search',
+                    cards
+                },
+                {
+                    quoted: m
+                }
+            )
+
+            await conn.sendMessage(m.chat, {
+                react: {
+                    text: '✅',
+                    key: m.key
+                }
+            })
 
         } catch (e) {
-            await conn.sendMessage(m.chat, { react: { text: '✖️', key: m.key } });
-            m.reply(`*${config.visuals.emoji2}* Error en la API de Kazuma.`);
+            console.log(e)
+
+            await conn.sendMessage(m.chat, {
+                react: {
+                    text: '✖️',
+                    key: m.key
+                }
+            })
+
+            m.reply('Error al procesar la búsqueda.')
         }
     }
-};
+}
 
-export default pinterestCommand;
+export default pinterestSearch
